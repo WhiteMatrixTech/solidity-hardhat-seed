@@ -6254,7 +6254,7 @@
     n.r(t);
     var a = n(1);
     /*!
-     * vue-router v3.5.1
+     * vue-router v3.5.2
      * (c) 2021 Evan You
      * @license MIT
      */ function r(e, t) {
@@ -7070,6 +7070,7 @@
           var n = 'object' != typeof e ? i[e] : void 0;
           X([t || e], a, r, i, n),
             n &&
+              n.alias.length &&
               X(
                 n.alias.map(function (e) {
                   return {path: e, children: [t]};
@@ -7634,10 +7635,12 @@
       );
     })($e);
     function Pe(e) {
-      var t = window.location.pathname;
+      var t = window.location.pathname,
+        n = t.toLowerCase(),
+        a = e.toLowerCase();
       return (
-        e &&
-          0 === t.toLowerCase().indexOf(e.toLowerCase()) &&
+        !e ||
+          (n !== a && 0 !== n.indexOf(C(a + '/'))) ||
           (t = t.slice(e.length)),
         (t || '/') + window.location.search + window.location.hash
       );
@@ -8002,7 +8005,7 @@
               r.created;
         }
       }),
-      (Ve.version = '3.5.1'),
+      (Ve.version = '3.5.2'),
       (Ve.isNavigationFailure = ke),
       (Ve.NavigationFailureType = _e),
       (Ve.START_LOCATION = h),
@@ -8534,16 +8537,18 @@
           trees: function () {
             let e = {};
             for (let t in this.json)
-              t.split(/(?<=\/)/).reduce(
-                function (e, n) {
-                  if (!n.includes(':')) return (e[n] = e[n] || {}), e[n];
-                  {
-                    let [a] = n.split(':');
-                    (e[a] = e[a] || []), e[a].push(this.json[t]);
-                  }
-                }.bind(this),
-                e
-              );
+              t.replace('/', '//')
+                .split(/\/(?=[^\/])/)
+                .reduce(
+                  function (e, n) {
+                    if (!n.includes(':')) return (e[n] = e[n] || {}), e[n];
+                    {
+                      let [a] = n.split(':');
+                      (e[a] = e[a] || []), e[a].push(this.json[t]);
+                    }
+                  }.bind(this),
+                  e
+                );
             return e;
           },
         },
@@ -8559,8 +8564,8 @@
     var gt = bt.exports;
     a.a.use(Ke);
     const _t = {
-        'contracts/Greeter.sol:Greeter': {
-          source: 'contracts/Greeter.sol',
+        'src/Greeter.sol:Greeter': {
+          source: 'src/Greeter.sol',
           name: 'Greeter',
           constructor: {
             inputs: [
@@ -8588,8 +8593,8 @@
             },
           },
         },
-        'contracts/governance/Timelock.sol:TimelockController': {
-          source: 'contracts/governance/Timelock.sol',
+        'src/governance/Timelock.sol:TimelockController': {
+          source: 'src/governance/Timelock.sol',
           name: 'TimelockController',
           details:
             'Contract module which acts as a timelocked controller. When set as the owner of an `Ownable` smart contract, it enforces a timelock on all `onlyOwner` maintenance operations. This gives time for users of the controlled contract to exit before a potentially dangerous maintenance operation is applied. By default, this contract is self administered, meaning administration tasks have to go through the timelock process. The proposer (resp executor) role is in charge of proposing (resp executing) operations. A common use case is to position this {TimelockController} as the owner of a smart contract, with a multisig or a DAO as the sole proposer. _Available since v3.3._',
@@ -9089,8 +9094,8 @@
             },
           },
         },
-        'contracts/token/SimpleToken.sol:SimpleToken': {
-          source: 'contracts/token/SimpleToken.sol',
+        'src/token/SimpleToken.sol:SimpleToken': {
+          source: 'src/token/SimpleToken.sol',
           name: 'SimpleToken',
           constructor: {
             inputs: [
@@ -9194,7 +9199,7 @@
               stateMutability: 'view',
               type: 'function',
               details:
-                'Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5,05` (`505 / 10 ** 2`). Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the value {ERC20} uses, unless this function is overridden; NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}.',
+                'Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5.05` (`505 / 10 ** 2`). Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the value {ERC20} uses, unless this function is overridden; NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}.',
             },
             'decreaseAllowance(address,uint256)': {
               inputs: [
@@ -9276,475 +9281,469 @@
             },
           },
         },
-        'contracts/token/SimpleTokenAccessControl.sol:SimpleTokenAccessControl':
-          {
-            source: 'contracts/token/SimpleTokenAccessControl.sol',
-            name: 'SimpleTokenAccessControl',
-            details:
-              '{ERC20} token, including:  - ability for holders to burn (destroy) their tokens  - a minter role that allows for token minting (creation)  - a pauser role that allows to stop all token transfers This contract uses {AccessControl} to lock permissioned functions using the different roles - head to its documentation for details. The account that deploys the contract will be granted the minter and pauser roles, as well as the default admin role, which will let it grant both minter and pauser roles to other accounts.',
-            constructor: {
+        'src/token/SimpleTokenAccessControl.sol:SimpleTokenAccessControl': {
+          source: 'src/token/SimpleTokenAccessControl.sol',
+          name: 'SimpleTokenAccessControl',
+          details:
+            '{ERC20} token, including:  - ability for holders to burn (destroy) their tokens  - a minter role that allows for token minting (creation)  - a pauser role that allows to stop all token transfers This contract uses {AccessControl} to lock permissioned functions using the different roles - head to its documentation for details. The account that deploys the contract will be granted the minter and pauser roles, as well as the default admin role, which will let it grant both minter and pauser roles to other accounts.',
+          constructor: {
+            inputs: [
+              {internalType: 'string', name: 'name', type: 'string'},
+              {internalType: 'string', name: 'symbol', type: 'string'},
+            ],
+            stateMutability: 'nonpayable',
+            type: 'constructor',
+          },
+          events: {
+            'Approval(address,address,uint256)': {
+              anonymous: !1,
               inputs: [
-                {internalType: 'string', name: 'name', type: 'string'},
-                {internalType: 'string', name: 'symbol', type: 'string'},
+                {
+                  indexed: !0,
+                  internalType: 'address',
+                  name: 'owner',
+                  type: 'address',
+                },
+                {
+                  indexed: !0,
+                  internalType: 'address',
+                  name: 'spender',
+                  type: 'address',
+                },
+                {
+                  indexed: !1,
+                  internalType: 'uint256',
+                  name: 'value',
+                  type: 'uint256',
+                },
               ],
-              stateMutability: 'nonpayable',
-              type: 'constructor',
+              name: 'Approval',
+              type: 'event',
             },
-            events: {
-              'Approval(address,address,uint256)': {
-                anonymous: !1,
-                inputs: [
-                  {
-                    indexed: !0,
-                    internalType: 'address',
-                    name: 'owner',
-                    type: 'address',
-                  },
-                  {
-                    indexed: !0,
-                    internalType: 'address',
-                    name: 'spender',
-                    type: 'address',
-                  },
-                  {
-                    indexed: !1,
-                    internalType: 'uint256',
-                    name: 'value',
-                    type: 'uint256',
-                  },
-                ],
-                name: 'Approval',
-                type: 'event',
-              },
-              'Paused(address)': {
-                anonymous: !1,
-                inputs: [
-                  {
-                    indexed: !1,
-                    internalType: 'address',
-                    name: 'account',
-                    type: 'address',
-                  },
-                ],
-                name: 'Paused',
-                type: 'event',
-              },
-              'RoleAdminChanged(bytes32,bytes32,bytes32)': {
-                anonymous: !1,
-                inputs: [
-                  {
-                    indexed: !0,
-                    internalType: 'bytes32',
-                    name: 'role',
-                    type: 'bytes32',
-                  },
-                  {
-                    indexed: !0,
-                    internalType: 'bytes32',
-                    name: 'previousAdminRole',
-                    type: 'bytes32',
-                  },
-                  {
-                    indexed: !0,
-                    internalType: 'bytes32',
-                    name: 'newAdminRole',
-                    type: 'bytes32',
-                  },
-                ],
-                name: 'RoleAdminChanged',
-                type: 'event',
-              },
-              'RoleGranted(bytes32,address,address)': {
-                anonymous: !1,
-                inputs: [
-                  {
-                    indexed: !0,
-                    internalType: 'bytes32',
-                    name: 'role',
-                    type: 'bytes32',
-                  },
-                  {
-                    indexed: !0,
-                    internalType: 'address',
-                    name: 'account',
-                    type: 'address',
-                  },
-                  {
-                    indexed: !0,
-                    internalType: 'address',
-                    name: 'sender',
-                    type: 'address',
-                  },
-                ],
-                name: 'RoleGranted',
-                type: 'event',
-              },
-              'RoleRevoked(bytes32,address,address)': {
-                anonymous: !1,
-                inputs: [
-                  {
-                    indexed: !0,
-                    internalType: 'bytes32',
-                    name: 'role',
-                    type: 'bytes32',
-                  },
-                  {
-                    indexed: !0,
-                    internalType: 'address',
-                    name: 'account',
-                    type: 'address',
-                  },
-                  {
-                    indexed: !0,
-                    internalType: 'address',
-                    name: 'sender',
-                    type: 'address',
-                  },
-                ],
-                name: 'RoleRevoked',
-                type: 'event',
-              },
-              'Transfer(address,address,uint256)': {
-                anonymous: !1,
-                inputs: [
-                  {
-                    indexed: !0,
-                    internalType: 'address',
-                    name: 'from',
-                    type: 'address',
-                  },
-                  {
-                    indexed: !0,
-                    internalType: 'address',
-                    name: 'to',
-                    type: 'address',
-                  },
-                  {
-                    indexed: !1,
-                    internalType: 'uint256',
-                    name: 'value',
-                    type: 'uint256',
-                  },
-                ],
-                name: 'Transfer',
-                type: 'event',
-              },
-              'Unpaused(address)': {
-                anonymous: !1,
-                inputs: [
-                  {
-                    indexed: !1,
-                    internalType: 'address',
-                    name: 'account',
-                    type: 'address',
-                  },
-                ],
-                name: 'Unpaused',
-                type: 'event',
-              },
+            'Paused(address)': {
+              anonymous: !1,
+              inputs: [
+                {
+                  indexed: !1,
+                  internalType: 'address',
+                  name: 'account',
+                  type: 'address',
+                },
+              ],
+              name: 'Paused',
+              type: 'event',
             },
-            methods: {
-              'DEFAULT_ADMIN_ROLE()': {
-                inputs: [],
-                name: 'DEFAULT_ADMIN_ROLE',
-                outputs: [{internalType: 'bytes32', name: '', type: 'bytes32'}],
-                stateMutability: 'view',
-                type: 'function',
-              },
-              'MINTER_ROLE()': {
-                inputs: [],
-                name: 'MINTER_ROLE',
-                outputs: [{internalType: 'bytes32', name: '', type: 'bytes32'}],
-                stateMutability: 'view',
-                type: 'function',
-              },
-              'PAUSER_ROLE()': {
-                inputs: [],
-                name: 'PAUSER_ROLE',
-                outputs: [{internalType: 'bytes32', name: '', type: 'bytes32'}],
-                stateMutability: 'view',
-                type: 'function',
-              },
-              'allowance(address,address)': {
-                inputs: [
-                  {internalType: 'address', name: 'owner', type: 'address'},
-                  {internalType: 'address', name: 'spender', type: 'address'},
-                ],
-                name: 'allowance',
-                outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
-                stateMutability: 'view',
-                type: 'function',
-                details: 'See {IERC20-allowance}.',
-              },
-              'approve(address,uint256)': {
-                inputs: [
-                  {internalType: 'address', name: 'spender', type: 'address'},
-                  {internalType: 'uint256', name: 'amount', type: 'uint256'},
-                ],
-                name: 'approve',
-                outputs: [{internalType: 'bool', name: '', type: 'bool'}],
-                stateMutability: 'nonpayable',
-                type: 'function',
-                details:
-                  'See {IERC20-approve}. Requirements: - `spender` cannot be the zero address.',
-              },
-              'balanceOf(address)': {
-                inputs: [
-                  {internalType: 'address', name: 'account', type: 'address'},
-                ],
-                name: 'balanceOf',
-                outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
-                stateMutability: 'view',
-                type: 'function',
-                details: 'See {IERC20-balanceOf}.',
-              },
-              'burn(uint256)': {
-                inputs: [
-                  {internalType: 'uint256', name: 'amount', type: 'uint256'},
-                ],
-                name: 'burn',
-                outputs: [],
-                stateMutability: 'nonpayable',
-                type: 'function',
-                details:
-                  'Destroys `amount` tokens from the caller. See {ERC20-_burn}.',
-              },
-              'burnFrom(address,uint256)': {
-                inputs: [
-                  {internalType: 'address', name: 'account', type: 'address'},
-                  {internalType: 'uint256', name: 'amount', type: 'uint256'},
-                ],
-                name: 'burnFrom',
-                outputs: [],
-                stateMutability: 'nonpayable',
-                type: 'function',
-                details:
-                  "Destroys `amount` tokens from `account`, deducting from the caller's allowance. See {ERC20-_burn} and {ERC20-allowance}. Requirements: - the caller must have allowance for ``accounts``'s tokens of at least `amount`.",
-              },
-              'decimals()': {
-                inputs: [],
-                name: 'decimals',
-                outputs: [{internalType: 'uint8', name: '', type: 'uint8'}],
-                stateMutability: 'view',
-                type: 'function',
-                details:
-                  'Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5,05` (`505 / 10 ** 2`). Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the value {ERC20} uses, unless this function is overridden; NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}.',
-              },
-              'decreaseAllowance(address,uint256)': {
-                inputs: [
-                  {internalType: 'address', name: 'spender', type: 'address'},
-                  {
-                    internalType: 'uint256',
-                    name: 'subtractedValue',
-                    type: 'uint256',
-                  },
-                ],
-                name: 'decreaseAllowance',
-                outputs: [{internalType: 'bool', name: '', type: 'bool'}],
-                stateMutability: 'nonpayable',
-                type: 'function',
-                details:
-                  'Atomically decreases the allowance granted to `spender` by the caller. This is an alternative to {approve} that can be used as a mitigation for problems described in {IERC20-approve}. Emits an {Approval} event indicating the updated allowance. Requirements: - `spender` cannot be the zero address. - `spender` must have allowance for the caller of at least `subtractedValue`.',
-              },
-              'getRoleAdmin(bytes32)': {
-                inputs: [
-                  {internalType: 'bytes32', name: 'role', type: 'bytes32'},
-                ],
-                name: 'getRoleAdmin',
-                outputs: [{internalType: 'bytes32', name: '', type: 'bytes32'}],
-                stateMutability: 'view',
-                type: 'function',
-                details:
-                  "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.",
-              },
-              'getRoleMember(bytes32,uint256)': {
-                inputs: [
-                  {internalType: 'bytes32', name: 'role', type: 'bytes32'},
-                  {internalType: 'uint256', name: 'index', type: 'uint256'},
-                ],
-                name: 'getRoleMember',
-                outputs: [{internalType: 'address', name: '', type: 'address'}],
-                stateMutability: 'view',
-                type: 'function',
-                details:
-                  'Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information.',
-              },
-              'getRoleMemberCount(bytes32)': {
-                inputs: [
-                  {internalType: 'bytes32', name: 'role', type: 'bytes32'},
-                ],
-                name: 'getRoleMemberCount',
-                outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
-                stateMutability: 'view',
-                type: 'function',
-                details:
-                  'Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role.',
-              },
-              'grantRole(bytes32,address)': {
-                inputs: [
-                  {internalType: 'bytes32', name: 'role', type: 'bytes32'},
-                  {internalType: 'address', name: 'account', type: 'address'},
-                ],
-                name: 'grantRole',
-                outputs: [],
-                stateMutability: 'nonpayable',
-                type: 'function',
-                details: 'Overload {grantRole} to track enumerable memberships',
-              },
-              'hasRole(bytes32,address)': {
-                inputs: [
-                  {internalType: 'bytes32', name: 'role', type: 'bytes32'},
-                  {internalType: 'address', name: 'account', type: 'address'},
-                ],
-                name: 'hasRole',
-                outputs: [{internalType: 'bool', name: '', type: 'bool'}],
-                stateMutability: 'view',
-                type: 'function',
-                details: 'Returns `true` if `account` has been granted `role`.',
-              },
-              'increaseAllowance(address,uint256)': {
-                inputs: [
-                  {internalType: 'address', name: 'spender', type: 'address'},
-                  {
-                    internalType: 'uint256',
-                    name: 'addedValue',
-                    type: 'uint256',
-                  },
-                ],
-                name: 'increaseAllowance',
-                outputs: [{internalType: 'bool', name: '', type: 'bool'}],
-                stateMutability: 'nonpayable',
-                type: 'function',
-                details:
-                  'Atomically increases the allowance granted to `spender` by the caller. This is an alternative to {approve} that can be used as a mitigation for problems described in {IERC20-approve}. Emits an {Approval} event indicating the updated allowance. Requirements: - `spender` cannot be the zero address.',
-              },
-              'mint(address,uint256)': {
-                inputs: [
-                  {internalType: 'address', name: 'to', type: 'address'},
-                  {internalType: 'uint256', name: 'amount', type: 'uint256'},
-                ],
-                name: 'mint',
-                outputs: [],
-                stateMutability: 'nonpayable',
-                type: 'function',
-                details:
-                  'Creates `amount` new tokens for `to`. See {ERC20-_mint}. Requirements: - the caller must have the `MINTER_ROLE`.',
-              },
-              'name()': {
-                inputs: [],
-                name: 'name',
-                outputs: [{internalType: 'string', name: '', type: 'string'}],
-                stateMutability: 'view',
-                type: 'function',
-                details: 'Returns the name of the token.',
-              },
-              'pause()': {
-                inputs: [],
-                name: 'pause',
-                outputs: [],
-                stateMutability: 'nonpayable',
-                type: 'function',
-                details:
-                  'Pauses all token transfers. See {ERC20Pausable} and {Pausable-_pause}. Requirements: - the caller must have the `PAUSER_ROLE`.',
-              },
-              'paused()': {
-                inputs: [],
-                name: 'paused',
-                outputs: [{internalType: 'bool', name: '', type: 'bool'}],
-                stateMutability: 'view',
-                type: 'function',
-                details:
-                  'Returns true if the contract is paused, and false otherwise.',
-              },
-              'renounceRole(bytes32,address)': {
-                inputs: [
-                  {internalType: 'bytes32', name: 'role', type: 'bytes32'},
-                  {internalType: 'address', name: 'account', type: 'address'},
-                ],
-                name: 'renounceRole',
-                outputs: [],
-                stateMutability: 'nonpayable',
-                type: 'function',
-                details:
-                  'Overload {renounceRole} to track enumerable memberships',
-              },
-              'revokeRole(bytes32,address)': {
-                inputs: [
-                  {internalType: 'bytes32', name: 'role', type: 'bytes32'},
-                  {internalType: 'address', name: 'account', type: 'address'},
-                ],
-                name: 'revokeRole',
-                outputs: [],
-                stateMutability: 'nonpayable',
-                type: 'function',
-                details:
-                  'Overload {revokeRole} to track enumerable memberships',
-              },
-              'supportsInterface(bytes4)': {
-                inputs: [
-                  {internalType: 'bytes4', name: 'interfaceId', type: 'bytes4'},
-                ],
-                name: 'supportsInterface',
-                outputs: [{internalType: 'bool', name: '', type: 'bool'}],
-                stateMutability: 'view',
-                type: 'function',
-                details: 'See {IERC165-supportsInterface}.',
-              },
-              'symbol()': {
-                inputs: [],
-                name: 'symbol',
-                outputs: [{internalType: 'string', name: '', type: 'string'}],
-                stateMutability: 'view',
-                type: 'function',
-                details:
-                  'Returns the symbol of the token, usually a shorter version of the name.',
-              },
-              'totalSupply()': {
-                inputs: [],
-                name: 'totalSupply',
-                outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
-                stateMutability: 'view',
-                type: 'function',
-                details: 'See {IERC20-totalSupply}.',
-              },
-              'transfer(address,uint256)': {
-                inputs: [
-                  {internalType: 'address', name: 'recipient', type: 'address'},
-                  {internalType: 'uint256', name: 'amount', type: 'uint256'},
-                ],
-                name: 'transfer',
-                outputs: [{internalType: 'bool', name: '', type: 'bool'}],
-                stateMutability: 'nonpayable',
-                type: 'function',
-                details:
-                  'See {IERC20-transfer}. Requirements: - `recipient` cannot be the zero address. - the caller must have a balance of at least `amount`.',
-              },
-              'transferFrom(address,address,uint256)': {
-                inputs: [
-                  {internalType: 'address', name: 'sender', type: 'address'},
-                  {internalType: 'address', name: 'recipient', type: 'address'},
-                  {internalType: 'uint256', name: 'amount', type: 'uint256'},
-                ],
-                name: 'transferFrom',
-                outputs: [{internalType: 'bool', name: '', type: 'bool'}],
-                stateMutability: 'nonpayable',
-                type: 'function',
-                details:
-                  "See {IERC20-transferFrom}. Emits an {Approval} event indicating the updated allowance. This is not required by the EIP. See the note at the beginning of {ERC20}. Requirements: - `sender` and `recipient` cannot be the zero address. - `sender` must have a balance of at least `amount`. - the caller must have allowance for ``sender``'s tokens of at least `amount`.",
-              },
-              'unpause()': {
-                inputs: [],
-                name: 'unpause',
-                outputs: [],
-                stateMutability: 'nonpayable',
-                type: 'function',
-                details:
-                  'Unpauses all token transfers. See {ERC20Pausable} and {Pausable-_unpause}. Requirements: - the caller must have the `PAUSER_ROLE`.',
-              },
+            'RoleAdminChanged(bytes32,bytes32,bytes32)': {
+              anonymous: !1,
+              inputs: [
+                {
+                  indexed: !0,
+                  internalType: 'bytes32',
+                  name: 'role',
+                  type: 'bytes32',
+                },
+                {
+                  indexed: !0,
+                  internalType: 'bytes32',
+                  name: 'previousAdminRole',
+                  type: 'bytes32',
+                },
+                {
+                  indexed: !0,
+                  internalType: 'bytes32',
+                  name: 'newAdminRole',
+                  type: 'bytes32',
+                },
+              ],
+              name: 'RoleAdminChanged',
+              type: 'event',
+            },
+            'RoleGranted(bytes32,address,address)': {
+              anonymous: !1,
+              inputs: [
+                {
+                  indexed: !0,
+                  internalType: 'bytes32',
+                  name: 'role',
+                  type: 'bytes32',
+                },
+                {
+                  indexed: !0,
+                  internalType: 'address',
+                  name: 'account',
+                  type: 'address',
+                },
+                {
+                  indexed: !0,
+                  internalType: 'address',
+                  name: 'sender',
+                  type: 'address',
+                },
+              ],
+              name: 'RoleGranted',
+              type: 'event',
+            },
+            'RoleRevoked(bytes32,address,address)': {
+              anonymous: !1,
+              inputs: [
+                {
+                  indexed: !0,
+                  internalType: 'bytes32',
+                  name: 'role',
+                  type: 'bytes32',
+                },
+                {
+                  indexed: !0,
+                  internalType: 'address',
+                  name: 'account',
+                  type: 'address',
+                },
+                {
+                  indexed: !0,
+                  internalType: 'address',
+                  name: 'sender',
+                  type: 'address',
+                },
+              ],
+              name: 'RoleRevoked',
+              type: 'event',
+            },
+            'Transfer(address,address,uint256)': {
+              anonymous: !1,
+              inputs: [
+                {
+                  indexed: !0,
+                  internalType: 'address',
+                  name: 'from',
+                  type: 'address',
+                },
+                {
+                  indexed: !0,
+                  internalType: 'address',
+                  name: 'to',
+                  type: 'address',
+                },
+                {
+                  indexed: !1,
+                  internalType: 'uint256',
+                  name: 'value',
+                  type: 'uint256',
+                },
+              ],
+              name: 'Transfer',
+              type: 'event',
+            },
+            'Unpaused(address)': {
+              anonymous: !1,
+              inputs: [
+                {
+                  indexed: !1,
+                  internalType: 'address',
+                  name: 'account',
+                  type: 'address',
+                },
+              ],
+              name: 'Unpaused',
+              type: 'event',
             },
           },
-        'contracts/upgradeable/GreeterImpl.sol:GreeterImpl': {
-          source: 'contracts/upgradeable/GreeterImpl.sol',
+          methods: {
+            'DEFAULT_ADMIN_ROLE()': {
+              inputs: [],
+              name: 'DEFAULT_ADMIN_ROLE',
+              outputs: [{internalType: 'bytes32', name: '', type: 'bytes32'}],
+              stateMutability: 'view',
+              type: 'function',
+            },
+            'MINTER_ROLE()': {
+              inputs: [],
+              name: 'MINTER_ROLE',
+              outputs: [{internalType: 'bytes32', name: '', type: 'bytes32'}],
+              stateMutability: 'view',
+              type: 'function',
+            },
+            'PAUSER_ROLE()': {
+              inputs: [],
+              name: 'PAUSER_ROLE',
+              outputs: [{internalType: 'bytes32', name: '', type: 'bytes32'}],
+              stateMutability: 'view',
+              type: 'function',
+            },
+            'allowance(address,address)': {
+              inputs: [
+                {internalType: 'address', name: 'owner', type: 'address'},
+                {internalType: 'address', name: 'spender', type: 'address'},
+              ],
+              name: 'allowance',
+              outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
+              stateMutability: 'view',
+              type: 'function',
+              details: 'See {IERC20-allowance}.',
+            },
+            'approve(address,uint256)': {
+              inputs: [
+                {internalType: 'address', name: 'spender', type: 'address'},
+                {internalType: 'uint256', name: 'amount', type: 'uint256'},
+              ],
+              name: 'approve',
+              outputs: [{internalType: 'bool', name: '', type: 'bool'}],
+              stateMutability: 'nonpayable',
+              type: 'function',
+              details:
+                'See {IERC20-approve}. Requirements: - `spender` cannot be the zero address.',
+            },
+            'balanceOf(address)': {
+              inputs: [
+                {internalType: 'address', name: 'account', type: 'address'},
+              ],
+              name: 'balanceOf',
+              outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
+              stateMutability: 'view',
+              type: 'function',
+              details: 'See {IERC20-balanceOf}.',
+            },
+            'burn(uint256)': {
+              inputs: [
+                {internalType: 'uint256', name: 'amount', type: 'uint256'},
+              ],
+              name: 'burn',
+              outputs: [],
+              stateMutability: 'nonpayable',
+              type: 'function',
+              details:
+                'Destroys `amount` tokens from the caller. See {ERC20-_burn}.',
+            },
+            'burnFrom(address,uint256)': {
+              inputs: [
+                {internalType: 'address', name: 'account', type: 'address'},
+                {internalType: 'uint256', name: 'amount', type: 'uint256'},
+              ],
+              name: 'burnFrom',
+              outputs: [],
+              stateMutability: 'nonpayable',
+              type: 'function',
+              details:
+                "Destroys `amount` tokens from `account`, deducting from the caller's allowance. See {ERC20-_burn} and {ERC20-allowance}. Requirements: - the caller must have allowance for ``accounts``'s tokens of at least `amount`.",
+            },
+            'decimals()': {
+              inputs: [],
+              name: 'decimals',
+              outputs: [{internalType: 'uint8', name: '', type: 'uint8'}],
+              stateMutability: 'view',
+              type: 'function',
+              details:
+                'Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5.05` (`505 / 10 ** 2`). Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the value {ERC20} uses, unless this function is overridden; NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}.',
+            },
+            'decreaseAllowance(address,uint256)': {
+              inputs: [
+                {internalType: 'address', name: 'spender', type: 'address'},
+                {
+                  internalType: 'uint256',
+                  name: 'subtractedValue',
+                  type: 'uint256',
+                },
+              ],
+              name: 'decreaseAllowance',
+              outputs: [{internalType: 'bool', name: '', type: 'bool'}],
+              stateMutability: 'nonpayable',
+              type: 'function',
+              details:
+                'Atomically decreases the allowance granted to `spender` by the caller. This is an alternative to {approve} that can be used as a mitigation for problems described in {IERC20-approve}. Emits an {Approval} event indicating the updated allowance. Requirements: - `spender` cannot be the zero address. - `spender` must have allowance for the caller of at least `subtractedValue`.',
+            },
+            'getRoleAdmin(bytes32)': {
+              inputs: [
+                {internalType: 'bytes32', name: 'role', type: 'bytes32'},
+              ],
+              name: 'getRoleAdmin',
+              outputs: [{internalType: 'bytes32', name: '', type: 'bytes32'}],
+              stateMutability: 'view',
+              type: 'function',
+              details:
+                "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.",
+            },
+            'getRoleMember(bytes32,uint256)': {
+              inputs: [
+                {internalType: 'bytes32', name: 'role', type: 'bytes32'},
+                {internalType: 'uint256', name: 'index', type: 'uint256'},
+              ],
+              name: 'getRoleMember',
+              outputs: [{internalType: 'address', name: '', type: 'address'}],
+              stateMutability: 'view',
+              type: 'function',
+              details:
+                'Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information.',
+            },
+            'getRoleMemberCount(bytes32)': {
+              inputs: [
+                {internalType: 'bytes32', name: 'role', type: 'bytes32'},
+              ],
+              name: 'getRoleMemberCount',
+              outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
+              stateMutability: 'view',
+              type: 'function',
+              details:
+                'Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role.',
+            },
+            'grantRole(bytes32,address)': {
+              inputs: [
+                {internalType: 'bytes32', name: 'role', type: 'bytes32'},
+                {internalType: 'address', name: 'account', type: 'address'},
+              ],
+              name: 'grantRole',
+              outputs: [],
+              stateMutability: 'nonpayable',
+              type: 'function',
+              details: 'Overload {grantRole} to track enumerable memberships',
+            },
+            'hasRole(bytes32,address)': {
+              inputs: [
+                {internalType: 'bytes32', name: 'role', type: 'bytes32'},
+                {internalType: 'address', name: 'account', type: 'address'},
+              ],
+              name: 'hasRole',
+              outputs: [{internalType: 'bool', name: '', type: 'bool'}],
+              stateMutability: 'view',
+              type: 'function',
+              details: 'Returns `true` if `account` has been granted `role`.',
+            },
+            'increaseAllowance(address,uint256)': {
+              inputs: [
+                {internalType: 'address', name: 'spender', type: 'address'},
+                {internalType: 'uint256', name: 'addedValue', type: 'uint256'},
+              ],
+              name: 'increaseAllowance',
+              outputs: [{internalType: 'bool', name: '', type: 'bool'}],
+              stateMutability: 'nonpayable',
+              type: 'function',
+              details:
+                'Atomically increases the allowance granted to `spender` by the caller. This is an alternative to {approve} that can be used as a mitigation for problems described in {IERC20-approve}. Emits an {Approval} event indicating the updated allowance. Requirements: - `spender` cannot be the zero address.',
+            },
+            'mint(address,uint256)': {
+              inputs: [
+                {internalType: 'address', name: 'to', type: 'address'},
+                {internalType: 'uint256', name: 'amount', type: 'uint256'},
+              ],
+              name: 'mint',
+              outputs: [],
+              stateMutability: 'nonpayable',
+              type: 'function',
+              details:
+                'Creates `amount` new tokens for `to`. See {ERC20-_mint}. Requirements: - the caller must have the `MINTER_ROLE`.',
+            },
+            'name()': {
+              inputs: [],
+              name: 'name',
+              outputs: [{internalType: 'string', name: '', type: 'string'}],
+              stateMutability: 'view',
+              type: 'function',
+              details: 'Returns the name of the token.',
+            },
+            'pause()': {
+              inputs: [],
+              name: 'pause',
+              outputs: [],
+              stateMutability: 'nonpayable',
+              type: 'function',
+              details:
+                'Pauses all token transfers. See {ERC20Pausable} and {Pausable-_pause}. Requirements: - the caller must have the `PAUSER_ROLE`.',
+            },
+            'paused()': {
+              inputs: [],
+              name: 'paused',
+              outputs: [{internalType: 'bool', name: '', type: 'bool'}],
+              stateMutability: 'view',
+              type: 'function',
+              details:
+                'Returns true if the contract is paused, and false otherwise.',
+            },
+            'renounceRole(bytes32,address)': {
+              inputs: [
+                {internalType: 'bytes32', name: 'role', type: 'bytes32'},
+                {internalType: 'address', name: 'account', type: 'address'},
+              ],
+              name: 'renounceRole',
+              outputs: [],
+              stateMutability: 'nonpayable',
+              type: 'function',
+              details:
+                'Overload {renounceRole} to track enumerable memberships',
+            },
+            'revokeRole(bytes32,address)': {
+              inputs: [
+                {internalType: 'bytes32', name: 'role', type: 'bytes32'},
+                {internalType: 'address', name: 'account', type: 'address'},
+              ],
+              name: 'revokeRole',
+              outputs: [],
+              stateMutability: 'nonpayable',
+              type: 'function',
+              details: 'Overload {revokeRole} to track enumerable memberships',
+            },
+            'supportsInterface(bytes4)': {
+              inputs: [
+                {internalType: 'bytes4', name: 'interfaceId', type: 'bytes4'},
+              ],
+              name: 'supportsInterface',
+              outputs: [{internalType: 'bool', name: '', type: 'bool'}],
+              stateMutability: 'view',
+              type: 'function',
+              details: 'See {IERC165-supportsInterface}.',
+            },
+            'symbol()': {
+              inputs: [],
+              name: 'symbol',
+              outputs: [{internalType: 'string', name: '', type: 'string'}],
+              stateMutability: 'view',
+              type: 'function',
+              details:
+                'Returns the symbol of the token, usually a shorter version of the name.',
+            },
+            'totalSupply()': {
+              inputs: [],
+              name: 'totalSupply',
+              outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
+              stateMutability: 'view',
+              type: 'function',
+              details: 'See {IERC20-totalSupply}.',
+            },
+            'transfer(address,uint256)': {
+              inputs: [
+                {internalType: 'address', name: 'recipient', type: 'address'},
+                {internalType: 'uint256', name: 'amount', type: 'uint256'},
+              ],
+              name: 'transfer',
+              outputs: [{internalType: 'bool', name: '', type: 'bool'}],
+              stateMutability: 'nonpayable',
+              type: 'function',
+              details:
+                'See {IERC20-transfer}. Requirements: - `recipient` cannot be the zero address. - the caller must have a balance of at least `amount`.',
+            },
+            'transferFrom(address,address,uint256)': {
+              inputs: [
+                {internalType: 'address', name: 'sender', type: 'address'},
+                {internalType: 'address', name: 'recipient', type: 'address'},
+                {internalType: 'uint256', name: 'amount', type: 'uint256'},
+              ],
+              name: 'transferFrom',
+              outputs: [{internalType: 'bool', name: '', type: 'bool'}],
+              stateMutability: 'nonpayable',
+              type: 'function',
+              details:
+                "See {IERC20-transferFrom}. Emits an {Approval} event indicating the updated allowance. This is not required by the EIP. See the note at the beginning of {ERC20}. Requirements: - `sender` and `recipient` cannot be the zero address. - `sender` must have a balance of at least `amount`. - the caller must have allowance for ``sender``'s tokens of at least `amount`.",
+            },
+            'unpause()': {
+              inputs: [],
+              name: 'unpause',
+              outputs: [],
+              stateMutability: 'nonpayable',
+              type: 'function',
+              details:
+                'Unpauses all token transfers. See {ERC20Pausable} and {Pausable-_unpause}. Requirements: - the caller must have the `PAUSER_ROLE`.',
+            },
+          },
+        },
+        'src/upgradeable/GreeterImpl.sol:GreeterImpl': {
+          source: 'src/upgradeable/GreeterImpl.sol',
           name: 'GreeterImpl',
           events: {
             'AdminChanged(address,address)': {
@@ -10002,8 +10001,8 @@
             },
           },
         },
-        'contracts/upgradeable/GreeterImplV2.sol:GreeterImplV2': {
-          source: 'contracts/upgradeable/GreeterImplV2.sol',
+        'src/upgradeable/GreeterImplV2.sol:GreeterImplV2': {
+          source: 'src/upgradeable/GreeterImplV2.sol',
           name: 'GreeterImplV2',
           events: {
             'AdminChanged(address,address)': {
@@ -10291,10 +10290,9 @@
             },
           },
         },
-        'contracts/upgradeable/SimpleTokenAccessControlUpgradeable.sol:SimpleTokenAccessControlImpl':
+        'src/upgradeable/SimpleTokenAccessControlUpgradeable.sol:SimpleTokenAccessControlImpl':
           {
-            source:
-              'contracts/upgradeable/SimpleTokenAccessControlUpgradeable.sol',
+            source: 'src/upgradeable/SimpleTokenAccessControlUpgradeable.sol',
             name: 'SimpleTokenAccessControlImpl',
             details:
               '{ERC20} token, including:  - ability for holders to burn (destroy) their tokens  - a minter role that allows for token minting (creation)  - a pauser role that allows to stop all token transfers This contract uses {AccessControl} to lock permissioned functions using the different roles - head to its documentation for details. The account that deploys the contract will be granted the minter and pauser roles, as well as the default admin role, which will let it grant both minter and pauser roles to other accounts.',
@@ -10588,7 +10586,7 @@
                 stateMutability: 'view',
                 type: 'function',
                 details:
-                  'Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5,05` (`505 / 10 ** 2`). Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the value {ERC20} uses, unless this function is overridden; NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}.',
+                  'Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5.05` (`505 / 10 ** 2`). Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the value {ERC20} uses, unless this function is overridden; NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}.',
               },
               'decreaseAllowance(address,uint256)': {
                 inputs: [
@@ -10831,10 +10829,9 @@
               },
             },
           },
-        'contracts/upgradeable/SimpleTokenAccessControlUpgradeableV2.sol:SimpleTokenAccessControlImplV2':
+        'src/upgradeable/SimpleTokenAccessControlUpgradeableV2.sol:SimpleTokenAccessControlImplV2':
           {
-            source:
-              'contracts/upgradeable/SimpleTokenAccessControlUpgradeableV2.sol',
+            source: 'src/upgradeable/SimpleTokenAccessControlUpgradeableV2.sol',
             name: 'SimpleTokenAccessControlImplV2',
             details:
               '{ERC20} token, including:  - ability for holders to burn (destroy) their tokens  - a minter role that allows for token minting (creation)  - a pauser role that allows to stop all token transfers This contract uses {AccessControl} to lock permissioned functions using the different roles - head to its documentation for details. The account that deploys the contract will be granted the minter and pauser roles, as well as the default admin role, which will let it grant both minter and pauser roles to other accounts.',
@@ -11128,7 +11125,7 @@
                 stateMutability: 'view',
                 type: 'function',
                 details:
-                  'Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5,05` (`505 / 10 ** 2`). Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the value {ERC20} uses, unless this function is overridden; NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}.',
+                  'Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5.05` (`505 / 10 ** 2`). Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the value {ERC20} uses, unless this function is overridden; NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}.',
               },
               'decreaseAllowance(address,uint256)': {
                 inputs: [
