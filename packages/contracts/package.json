@@ -10,7 +10,8 @@
     "format": "prettier --check \"**/*.{ts,js,sol}\"",
     "format:fix": "prettier --write \"**/*.{ts,js,sol}\"",
     "compile": "hardhat compile",
-    "test:cov": "hardhat coverage --network hardhat"
+    "test:cov": "hardhat coverage --network hardhat",
+    "test": "hardhat test --network hardhat"
   },
   "author": "Alvin(Xinyao) Sun <lucklyric@gmail.com>",
   "license": "ISC",
