@@ -86,14 +86,13 @@ const config: HardhatUserConfig = {
         .toNumber(),
     },
     rinkeby: {
-      // url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ENDPOINT_KEY}`,
-      url: `https://rinkeby.infura.io/v3/${process.env.RINKEBY_INFURA}`,
+      url: `https://eth-rinkeby.alchemyapi.io/v2/vx_gGIHMcx4eoxRL4tIWizRKd9buBR3M`,
       accounts,
       timeout: 60000,
       gasPrice: BigNumber.from(gasPrice)
         .mul(10 ** 9)
         .toNumber(),
-      kmsKeyId: 'mrk-ab4b1cc782824ee3a943f118da37e969',
+      kmsKeyId: 'e2a4f04b-74ef-4b0a-b6f2-530c939dfabb',
     },
     ropsten: {
       url: `https://eth-ropsten.alchemyapi.io/v2/hH-zq0a6h2KEIMDJCxdZCt-SZ9prLXmZ`,
@@ -102,7 +101,7 @@ const config: HardhatUserConfig = {
       gasPrice: BigNumber.from(gasPrice)
         .mul(10 ** 9)
         .toNumber(),
-      kmsKeyId: 'mrk-ab4b1cc782824ee3a943f118da37e969',
+      kmsKeyId: 'e2a4f04b-74ef-4b0a-b6f2-530c939dfabb',
     },
     mubai: {
       url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ENDPOINT_KEY}`,
