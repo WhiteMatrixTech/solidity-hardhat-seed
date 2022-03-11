@@ -67,9 +67,11 @@
     "ts-node": "^10.2.1",
     "typechain": "^5.1.2",
     "typescript": "^4.3.5",
-    "@nomiclabs/hardhat-etherscan": "^2.1.6"
+    "@nomiclabs/hardhat-etherscan": "^2.1.6",
+    "@white-matrix/hardhat-kms-signer": "^0.1.1"
   },
   "dependencies": {
+    "aws-sdk": "^2.1090.0",
     "bignumber.js": "^9.0.1",
     "chalk": "^4.1.2"
   },

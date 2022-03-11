@@ -11,6 +11,8 @@ import 'hardhat-contract-sizer';
 import 'solidity-coverage';
 import '@nomiclabs/hardhat-waffle';
 import '@nomiclabs/hardhat-etherscan';
+import '@white-matrix/hardhat-kms-signer';
+
 import fs from 'fs';
 
 if (fs.existsSync('./typechain')) {
@@ -76,7 +78,7 @@ const config: HardhatUserConfig = {
         .toNumber(),
     },
     mainnet: {
-      url: `https://mainnet.infura.io/v3/${process.env.MAINNET_INFURA}`,
+      url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ENDPOINT_KEY}`,
       accounts,
       timeout: 60000,
       gasPrice: BigNumber.from(gasPrice)
@@ -84,7 +86,25 @@ const config: HardhatUserConfig = {
         .toNumber(),
     },
     rinkeby: {
-      url: `https://rinkeby.infura.io/v3/${process.env.RINKEBY_INFURA}`,
+      url: `https://eth-rinkeby.alchemyapi.io/v2/vx_gGIHMcx4eoxRL4tIWizRKd9buBR3M`,
+      accounts,
+      timeout: 60000,
+      gasPrice: BigNumber.from(gasPrice)
+        .mul(10 ** 9)
+        .toNumber(),
+      kmsKeyId: 'e2a4f04b-74ef-4b0a-b6f2-530c939dfabb',
+    },
+    ropsten: {
+      url: `https://eth-ropsten.alchemyapi.io/v2/hH-zq0a6h2KEIMDJCxdZCt-SZ9prLXmZ`,
+      accounts,
+      timeout: 60000,
+      gasPrice: BigNumber.from(gasPrice)
+        .mul(10 ** 9)
+        .toNumber(),
+      kmsKeyId: 'e2a4f04b-74ef-4b0a-b6f2-530c939dfabb',
+    },
+    mubai: {
+      url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ENDPOINT_KEY}`,
       accounts,
       timeout: 60000,
       gasPrice: BigNumber.from(gasPrice)
