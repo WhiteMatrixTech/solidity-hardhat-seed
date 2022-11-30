@@ -1,1 +1,1 @@
-export {Greeter__factory} from "hardhat-seed-contracts";
+export {} from "hardhat-seed-contracts";
